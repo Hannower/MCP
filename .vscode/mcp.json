@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "supabase": {
+      "command": "C:\\Users\\hannowermonteiro0649\\Documents\\MCP\\.venv\\Scripts\\python.exe",
+      "args": [
+        "C:\\Users\\hannowermonteiro0649\\Documents\\MCP\\server.py"
+      ]
+    }
+  }
+}
