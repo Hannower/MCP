@@ -74,18 +74,31 @@ source .venv/bin/activate
 Com a `.venv` ativada, execute:
 
 ```bash
-pip install mcp psycopg2-binary python-dotenv
+python -m pip install -r requeriments.txt
+python -m pip install "mcp<2"
 ```
+
+> ⚠️ **Importante:** Este projeto usa a API `mcp.server.fastmcp` da versão 1.x do pacote `mcp`. A versão 2.x mudou a API e quebra a importação do arquivo `server.py`.
 
 ### 3. Configurar Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do projeto:
+Crie um arquivo `.env` na raiz do projeto com a string de conexão direta do Supabase (sem `?pgbouncer=true` para uso com `psycopg2`):
 
 ```env
 DATABASE_URL=postgresql://postgres.SEU_PROJETO:SUA_SENHA@SEU_HOST:PORT/postgres
 ```
 
-> ⚠️ **Atenção:** Caso sua string de conexão do Supabase inclua o parâmetro `?pgbouncer=true`, certifique-se de removê-lo se o driver `psycopg2` apresentar problemas de conexão direta.
+Se você tiver uma URL do pooler do Supabase com `?pgbouncer=true`, prefira usar a string direta do session-mode ou a URL sem esse parâmetro para evitar problemas na conexão.
+
+### 4. Executar o servidor MCP
+
+Na raiz do projeto, com a `.venv` ativada:
+
+```bash
+python server.py
+```
+
+Esse comando inicia o servidor MCP em modo `stdio`, pronto para ser registrado em clientes como Antigravity, Cursor ou Claude Desktop.
 
 ---
 
@@ -99,22 +112,37 @@ DATABASE_URL=postgresql://postgres.SEU_PROJETO:SUA_SENHA@SEU_HOST:PORT/postgres
 
 ## 🔌 Conexão com o Antigravity / Clientes MCP
 
-Para registrar este servidor no seu cliente (ex.: no arquivo `settings.json` do VS Code para o Antigravity):
+Para registrar este servidor no cliente MCP (ex.: no arquivo `settings.json` do VS Code / Antigravity), use um trecho como este:
 
 ```json
 {
   "antigravity.mcpServers": {
     "mcp-supabase": {
-      "command": "C:\\CAMINHO\\COMPLETO\\mcp-supabase-server\\.venv\\Scripts\\python.exe",
+      "command": "C:\\Users\\SEU_USUARIO\\Documents\\MCP\\.venv\\Scripts\\python.exe",
       "args": [
-        "C:\\CAMINHO\\COMPLETO\\mcp-supabase-server\\server.py"
+        "C:\\Users\\SEU_USUARIO\\Documents\\MCP\\server.py"
       ]
     }
   }
 }
 ```
 
-> **Dica:** No Windows, lembre-se de usar barras duplas (`\\`) nos caminhos do arquivo JSON.
+Exemplo real com o diretório atual do projeto:
+
+```json
+{
+  "antigravity.mcpServers": {
+    "mcp-supabase": {
+      "command": "C:\\Users\\hannowermonteiro0649\\Documents\\MCP\\.venv\\Scripts\\python.exe",
+      "args": [
+        "C:\\Users\\hannowermonteiro0649\\Documents\\MCP\\server.py"
+      ]
+    }
+  }
+}
+```
+
+> **Dica:** No Windows, use barras duplas (`\\`) nos caminhos do JSON. Se o cliente exigir uma chave diferente, mantenha o mesmo `command` e `args` do servidor local.
 
 ---
 
